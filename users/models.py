@@ -9,16 +9,20 @@ class User(AbstractUser):
     email = models.EmailField(unique=True,
                               verbose_name='почта')
     first_name = models.CharField(max_length=15,
-                                  verbose_name="имя")
+                                  verbose_name="имя",
+                                  **NULLABLE)
     last_name = models.CharField(max_length=15,
-                                 verbose_name="фамилия")
+                                 verbose_name="фамилия",
+                                 **NULLABLE)
     phone = models.CharField(max_length=35,
-                             verbose_name="телефон")
+                             verbose_name="телефон",
+                             **NULLABLE)
     avatar = models.ImageField(upload_to='users/',
                                verbose_name='аватар',
                                **NULLABLE)
     country = models.CharField(max_length=35,
-                               verbose_name='страна')
+                               verbose_name='страна',
+                               **NULLABLE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

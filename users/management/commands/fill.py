@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
 from college.models import Lesson, Course
-from users.models import User, Payments
+from users.models import User, Payment
 
 
 class Command(BaseCommand):
@@ -43,7 +43,7 @@ class Command(BaseCommand):
         for course in courses_list:
             Course.objects.create(**course)
 
-        Payments.objects.all().delete()
+        Payment.objects.all().delete()
         payments_list = [
             {
                 'date': '2011-04-28 18:00:00',
@@ -63,6 +63,6 @@ class Command(BaseCommand):
         payments_for_create = []
 
         for payment in payments_list:
-            payments_for_create.append(Payments(**payment))
+            payments_for_create.append(Payment(**payment))
 
-        Payments.objects.bulk_create(payments_for_create)
+        Payment.objects.bulk_create(payments_for_create)
