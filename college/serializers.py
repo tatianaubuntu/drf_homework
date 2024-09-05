@@ -1,8 +1,7 @@
 from rest_framework import serializers
 
-from college.models import Course, Lesson
+from college.models import Course, Lesson, Subscription
 from college.validators import UrlValidator
-from users.models import User
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -13,17 +12,17 @@ class LessonSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SubscriptionUserSerializer(serializers.ModelSerializer):
+class SubscriptionSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = User
-        fields = ['email']
+        model = Subscription
+        fields = ['user']
 
 
 class CourseSerializer(serializers.ModelSerializer):
     lesson_count = serializers.SerializerMethodField()
     lesson = LessonSerializer(read_only=True, many=True)
-    subscription = SubscriptionUserSerializer(source='subscription_set.all.user',
+    subscription = SubscriptionSerializer(source='subscription_set',
                                           many=True, read_only=True)
 
     class Meta:

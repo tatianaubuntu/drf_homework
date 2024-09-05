@@ -73,11 +73,9 @@ class SubscriptionAPIView(APIView):
         course_id = self.request.data.get('course')
         course_item = get_object_or_404(Course, pk=course_id)
         subs_item = Subscription.objects.filter(user=user, course=course_item)
-
         if subs_item.exists():
             subs_item.delete()
-            message = 'Подписка отключена'
-
+            message = 'подписка удалена'
         else:
             Subscription.objects.create(user=user, course=course_item)
             message = 'Подписка включена'
