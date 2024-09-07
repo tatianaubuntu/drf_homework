@@ -1,3 +1,5 @@
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -6,7 +8,7 @@ from rest_framework.views import APIView
 
 from college.models import Course, Lesson, Subscription
 from college.paginators import PageNumPagination
-from college.serializers import CourseSerializer, LessonSerializer
+from college.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
 from users.permissions import IsModerator, IsOwner
 
 
@@ -68,6 +70,13 @@ class LessonDestroyAPIView(generics.DestroyAPIView):
 class SubscriptionAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        required=['course'],
+        properties={
+            'course': openapi.Schema(type=openapi.TYPE_INTEGER)
+        },
+    ))
     def post(self, *args, **kwargs):
         user = self.request.user
         course_id = self.request.data.get('course')

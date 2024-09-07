@@ -40,11 +40,12 @@ class Payment(models.Model):
         ('cash', 'наличные'),
         ('remittance', 'перевод на счет'),
     )
-    date = models.DateTimeField(verbose_name='дата и время оплаты')
+    date = models.DateTimeField(verbose_name='дата и время оплаты', **NULLABLE)
     amount = models.PositiveIntegerField(verbose_name='сумма оплаты')
     payment = models.CharField(max_length=150,
                                verbose_name='способ оплаты',
-                               choices=payment_tuple)
+                               choices=payment_tuple,
+                               **NULLABLE)
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL,
                              verbose_name='пользователь',
@@ -57,6 +58,12 @@ class Payment(models.Model):
                                on_delete=models.SET_NULL,
                                **NULLABLE,
                                verbose_name='оплаченный урок')
+    session_id = models.CharField(max_length=255,
+                                  verbose_name='ID сессии',
+                                  **NULLABLE)
+    link_to_payment = models.URLField(max_length=400,
+                                      verbose_name='ссылка на оплату',
+                                      **NULLABLE)
 
     def __str__(self):
         return f'{self.user} - {self.amount}'
