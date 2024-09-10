@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from college.models import Course, Lesson, Subscription
 from college.paginators import PageNumPagination
 from college.serializers import CourseSerializer, LessonSerializer, SubscriptionSerializer
+from college.tasks import subscription_message
 from users.permissions import IsModerator, IsOwner
 
 
@@ -32,6 +33,13 @@ class CourseViewSet(viewsets.ModelViewSet):
         new_course = serializer.save()
         new_course.owner = self.request.user
         new_course.save()
+
+    def perform_update(self, serializer):
+        update_course = serializer.save()
+        subscriptions = Subscription.objects.filter(course=update_course)
+        for subscription in subscriptions:
+            subscription_message.delay(update_course.title, subscription.user.email)
+        update_course.save()
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
@@ -88,5 +96,6 @@ class SubscriptionAPIView(APIView):
         else:
             Subscription.objects.create(user=user, course=course_item)
             message = 'Подписка включена'
+
 
         return Response({'message': message})
